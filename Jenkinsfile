@@ -18,7 +18,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'jenkins-github', url: 'https://github.com/Mariamyamoun/pipeline-k8s.git'
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/Abdelilahbelhou/pfe_abdelilah.git'
             }
         }
         
@@ -43,8 +43,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardgameApp \
-                    -Dsonar.projectKey=Boardgame -Dsonar.java.binaries=.'''
+                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=pfe \
+                    -Dsonar.projectKey=pfe -Dsonar.java.binaries=.'''
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonar'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-cred	'
                 }
             }
         }
@@ -72,7 +72,7 @@ pipeline {
         
         stage('Publish To Nexus') {
             steps {
-                withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'JDK17', maven: 'maven3') {
+                withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3') {
                     sh "mvn deploy -X"
                 }
             }
@@ -81,8 +81,8 @@ pipeline {
         stage('Build & Tag Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'jenkins-dockerhub') {
-                        sh "docker build -t mariamyaa/boardgame:latest ."
+                    withDockerRegistry(credentialsId: 'docker-cred') {
+                        sh "docker build -t Abde1i1ah01/pfe:latest ."
                     }
                 }
             }
@@ -90,15 +90,15 @@ pipeline {
         
         stage('Docker Image Scan') {
             steps {
-                sh "trivy image --format table -o trivy-image-report.html mariamyaa/boardgame:latest"
+                sh "trivy image --format table -o trivy-image-report.html Abde1i1ah01/pfe:latest"
             }
         }
         
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'jenkins-dockerhub') {
-                        sh "docker push mariamyaa/boardgame:latest"
+                    withDockerRegistry(credentialsId: 'docker-cred') {
+                        sh "docker push Abde1i1ah01/pfe:latest"
                     }
                 }
             }
@@ -106,7 +106,7 @@ pipeline {
         
         stage('Deploy To Kubernetes') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'jenkins-k8s', namespace: 'webapps', serverUrl: '') {
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'jk8-cred	', namespace: 'webapps', serverUrl: '') {
                     sh "kubectl apply -f deployment-service.yaml"
                 }
             }
@@ -114,7 +114,7 @@ pipeline {
         
         stage('Verify the Deployment') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'jenkins-k8s', namespace: 'webapps', serverUrl: '') {
+                withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8-cred', namespace: 'webapps', serverUrl: '') {
                     sh "ls -la"
                     sh "cat deployment-service.yaml"
                     sh "kubectl get pods -n webapps"
