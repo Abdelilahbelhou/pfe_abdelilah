@@ -12,7 +12,7 @@ pipeline {
     }
     
     environment {
-        SCANNER_HOME = tool 'sonar'
+        SCANNER_HOME = tool 'sonar-scanner'
     }
     
     stages {
@@ -42,7 +42,7 @@ pipeline {
         
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonar-scanner') {
                     sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=pfe \
                     -Dsonar.projectKey=pfe -Dsonar.java.binaries=.'''
                 }
