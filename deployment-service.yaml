@@ -1,36 +1,35 @@
+
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: pfe-deployment
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: pfe
-  replicas: 2 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
         app: pfe
     spec:
       containers:
-        - name: pfe
-          image: Abde1i1ah01/pfe:latest # Image that will be used to containers in the cluster
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080 # The port that the container is running on in the cluster
-
+      - name: pfe
+        image: Abde1ilah/pfe:latest
+        ports:
+        - containerPort: 80   # Change to your app's port if different
 
 ---
 
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
-  name: pfe-ssvc
+apiVersion: v1
+kind: Service
+metadata:
+  name: pfe-service
 spec:
   selector:
     app: pfe
   ports:
-    - protocol: "TCP"
+    - protocol: TCP
       port: 80
-      targetPort: 8080 
-  type: LoadBalancer # type of the service.
+      targetPort: 80  # Change if your container uses a different port
+  type: LoadBalancer  # Use NodePort for minikube or local clusters
