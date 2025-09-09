@@ -17,7 +17,7 @@ spec:
       - name: pfe
         image: Abde1ilah/pfe:latest
         ports:
-        - containerPort: 80   # Change to your app's port if different
+        - containerPort: 8080  # Change to your app's port if different
 
 ---
 
@@ -30,6 +30,6 @@ spec:
     app: pfe
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80  # Change if your container uses a different port
+      port: 8080
+      targetPort: 8080  # Change if your container uses a different port
   type: LoadBalancer  # Use NodePort for minikube or local clusters
