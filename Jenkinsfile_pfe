@@ -18,7 +18,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/Abdelilahbelhou/pfe_abdelilah.git'
+                git branch: 'main', credentialsId: 'jenkins-github', url: 'https://github.com/Abdelilahbelhou/pfe_abdelilah.git'
             }
         }
         
