@@ -81,7 +81,7 @@ pipeline {
         stage('Build & Tag Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred') {
+                    withDockerRegistry(credentialsId: 'cred-docker') {
                         sh "docker build -t Abde1i1ah01/pfe:latest ."
                     }
                 }
@@ -97,7 +97,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred') {
+                    withDockerRegistry(credentialsId: 'cred-docker') {
                         sh "docker push Abde1i1ah01/pfe:latest"
                     }
                 }
