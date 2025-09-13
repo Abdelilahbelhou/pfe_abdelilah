@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pfe
-        image: abde1ilah/pfe:latest
+        image: abde1i1ah/pfe:latest
         ports:
         - containerPort: 8080  # Change to your app's port if different
 
