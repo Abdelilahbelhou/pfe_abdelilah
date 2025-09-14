@@ -1,0 +1,44 @@
+
+services:
+  jenkins:
+    build: .
+    container_name: pfe_abdelilah-jenkins
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    user: root
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - C:\Users\forca\.kube/config:/root/.kube/config:ro
+
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: pfe_abdelilah-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+
+  nexus:
+    image: sonatype/nexus3
+    container_name: pfe_abdelilah-nexus
+    ports:
+      - "8081:8081"
+    volumes:
+      - nexus_data:/nexus-data
+
+  trivy:
+    image: aquasec/trivy:latest
+    container_name: pfe_abdelilah-trivy
+    command: tail -f /dev/null # keeps the container running for CLI execs if needed
+
+volumes:
+  jenkins_home:
+  sonarqube_data:
+  nexus_data:
